@@ -1,8 +1,6 @@
 import {
     IsString,
     IsNotEmpty,
-    ValidationArguments,
-    IsOptional,
     IsInt,
     Max,
     IsArray
@@ -13,8 +11,7 @@ export class CreateBookDto {
         message: 'Title cannot be empty.'
     })
     @IsString({
-        message: (args: ValidationArguments) =>
-            `Title has to be a string, but was given ${args.value}.`
+        message: `Title has to be a string.`
     })
     readonly title: string;
 
@@ -22,12 +19,10 @@ export class CreateBookDto {
         message: 'Year cannot be empty.'
     })
     @IsInt({
-        message: (args: ValidationArguments) =>
-            `Year has to be an integer, but was given ${args.value}.`
+        message: `Year has to be an integer.`
     })
     @Max(new Date().getFullYear(), {
-        message: (args: ValidationArguments) =>
-            `Year cannot surpass the current year (${new Date().getFullYear()}), but was given ${args.value}.`
+        message: `Year cannot be greater than the current year.`
     })
     readonly year: number;
 

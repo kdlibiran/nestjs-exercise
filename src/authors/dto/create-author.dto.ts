@@ -2,8 +2,7 @@ import {
     IsString,
     IsNotEmpty,
     IsEmail,
-    IsArray,
-    ValidationArguments
+    IsArray
 } from 'class-validator';
 
 export class CreateAuthorDto {
@@ -11,8 +10,7 @@ export class CreateAuthorDto {
         message: 'Name cannot be empty.'
     })
     @IsString({
-        message: (args: ValidationArguments) =>
-            `Name has to be a string, but was given ${args.value}.`
+        message: `Name has to be a string`
     })
     readonly name: string;
 
@@ -20,8 +18,7 @@ export class CreateAuthorDto {
         message: 'Email cannot be empty.'
     })
     @IsString({
-        message: (args: ValidationArguments) =>
-            `Email has to be a string, but was given ${args.value}.`
+        message: `Email has to be a string`
     })
 
     @IsEmail({}, {

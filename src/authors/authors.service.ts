@@ -4,7 +4,7 @@ import { UpdateAuthorDto } from './dto/update-author.dto';
 import { AuthorsDatabaseService } from '../data/authors-database.service';
 import { BooksDatabaseService } from '../data/books-database.service';
 import { v4 as uuidv4 } from 'uuid';
-import { IAuthor } from '../types/data.interface';
+import { IAuthor, IBook } from '../types/data.interface';
 import { NotFoundException } from '@nestjs/common';
 @Injectable()
 export class AuthorsService {
@@ -85,6 +85,14 @@ export class AuthorsService {
 
 
     return {message: `Author with id ${id} deleted`};
+  }
+
+  findBooks(authorId: string): IBook[] {
+    const author = this.authorsDatabaseService.findOne(authorId);
+    if (!author) {
+      throw new NotFoundException(`Error finding books for author. Cannot find author with id ${authorId}`);
+    }
+    return author.books.map((bookId: string): IBook => this.booksDatabaseService.findOne(bookId));
   }
 
   addBookToAuthor(authorId: string, bookId: string): IAuthor {

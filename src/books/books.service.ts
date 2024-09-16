@@ -82,6 +82,14 @@ export class BooksService {
     return {message: `Book with id ${id} deleted`};
   }
 
+  findAuthors(bookId: string): IAuthor[] {
+    const book: IBook = this.booksDatabaseService.findOne(bookId);
+    if (!book) {
+      throw new NotFoundException(`Error finding authors for book. Cannot find book with id ${bookId}`);
+    }
+    return book.authors.map((authorId: string): IAuthor => this.authorsDatabaseService.findOne(authorId));
+  }
+
   addAuthorToBook(bookId: string, authorId: string): IBook {
     const book: IBook = this.booksDatabaseService.findOne(bookId);
     if (!book) {

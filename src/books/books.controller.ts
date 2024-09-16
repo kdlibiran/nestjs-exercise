@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } 
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { IBook } from '../types/data.interface';
+import { IAuthor, IBook } from '../types/data.interface';
 
 @Controller('books')
 export class BooksController {
@@ -44,6 +44,15 @@ export class BooksController {
   remove(@Param('id') id: string): {message: string} {
     try {
       return this.booksService.remove(id);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Get(':id/authors')
+  getAuthors(@Param('id') id: string): IAuthor[] {
+    try {
+      return this.booksService.findAuthors(id);
     } catch (error) {
       throw new NotFoundException(error.message);
     }

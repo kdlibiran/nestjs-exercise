@@ -2,11 +2,12 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } 
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
-import { IAuthor, IBook } from 'src/types/data.interface';
+import { IAuthorsWithBooks } from 'src/types/data.interface';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Authors')
 @Controller('authors')
+
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
 
@@ -15,7 +16,7 @@ export class AuthorsController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   @Post()
-  create(@Body() createAuthorDto: CreateAuthorDto): IAuthor {
+  async create(@Body() createAuthorDto: CreateAuthorDto): Promise<IAuthorsWithBooks> {
     try {
       return this.authorsService.create(createAuthorDto);
     } catch (error) {
@@ -26,8 +27,8 @@ export class AuthorsController {
   @ApiOperation({ summary: 'Get all authors' })
   @ApiResponse({ status: 200, description: 'The authors have been successfully retrieved.' })
   @Get()
-  findAll(): IAuthor[] {
-    return this.authorsService.findAll();
+  async findAll(): Promise<IAuthorsWithBooks[]> {
+    return this.authorsService.findAllWithRelated();
   }
 
   @ApiOperation({ summary: 'Get an author by ID' })
@@ -35,12 +36,8 @@ export class AuthorsController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @Get(':id')
-  findOne(@Param('id') id: string): IAuthor {
-    try {
-      return this.authorsService.findOne(id);
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+  async findOne(@Param('id') id: string): Promise<IAuthorsWithBooks> {
+    return this.authorsService.findOneWithRelated(id);
   }
 
   @ApiOperation({ summary: 'Update an author by ID' })
@@ -48,12 +45,8 @@ export class AuthorsController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto): IAuthor {
-    try {
-      return this.authorsService.update(id, updateAuthorDto);
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+  async update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto): Promise<IAuthorsWithBooks> {
+    return this.authorsService.update(id, updateAuthorDto);
   }
 
   @ApiOperation({ summary: 'Delete an author by ID' })
@@ -61,24 +54,27 @@ export class AuthorsController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @Delete(':id')
-  remove(@Param('id') id: string): {message: string} {
-    try {
-      return this.authorsService.remove(id);
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+  async remove(@Param('id') id: string): Promise<{message: string}> {
+    return this.authorsService.remove(id);
   }
 
-  @ApiOperation({ summary: 'Get books by author ID' })
-  @ApiResponse({ status: 200, description: 'The books have been successfully retrieved.' })
+  @ApiOperation({ summary: 'Add a book to an author by ID' })
+  @ApiResponse({ status: 200, description: 'The book has been successfully added to the author.' })
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
-  @Get(':id/books')
-  getBooks(@Param('id') id: string): IBook[] {
-    try {
-      return this.authorsService.findBooks(id);
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+  @ApiParam({ name: 'bookId', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
+  @Post(':id/books/:bookId')
+  async addBook(@Param('id') id: string, @Param('bookId') bookId: string): Promise<IAuthorsWithBooks> {
+    return this.authorsService.addRelatedEntity(id, bookId);
+  }
+
+  @ApiOperation({ summary: 'Remove a book from an author by ID' })
+  @ApiResponse({ status: 200, description: 'The book has been successfully removed from the author.' })
+  @ApiResponse({ status: 404, description: 'Not Found.' })
+  @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
+  @ApiParam({ name: 'bookId', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
+  @Delete(':id/books/:bookId')
+  async removeBook(@Param('id') id: string, @Param('bookId') bookId: string): Promise<IAuthorsWithBooks> {
+    return this.authorsService.removeRelatedEntity(id, bookId);
   }
 }

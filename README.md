@@ -58,6 +58,135 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## API Endpoints
+
+### Authors
+
+- **Create an author**
+  - **URL:** `/authors`
+  - **Method:** `POST`
+  - **Body:**
+    ```json
+    {
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "books": ["book-id-1", "book-id-2"]
+    }
+    ```
+  - **Responses:**
+    - `201`: The author has been successfully created.
+    - `400`: Bad Request.
+    - `500`: Internal Server Error.
+
+- **Get all authors**
+  - **URL:** `/authors`
+  - **Method:** `GET`
+  - **Responses:**
+    - `200`: The authors have been successfully retrieved.
+
+- **Get an author by ID**
+  - **URL:** `/authors/:id`
+  - **Method:** `GET`
+  - **Params:**
+    - `id`: The ID of the author
+  - **Responses:**
+    - `200`: The author has been successfully retrieved.
+    - `404`: Not Found.
+
+- **Update an author by ID**
+  - **URL:** `/authors/:id`
+  - **Method:** `PATCH`
+  - **Params:**
+    - `id`: The ID of the author
+  - **Body:**
+    ```json
+    {
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "books": ["book-id-1", "book-id-2"]
+    }
+    ```
+  - **Responses:**
+    - `200`: The author has been successfully updated.
+    - `404`: Not Found.
+
+- **Delete an author by ID**
+  - **URL:** `/authors/:id`
+  - **Method:** `DELETE`
+  - **Params:**
+    - `id`: The ID of the author
+  - **Responses:**
+    - `200`: The author has been successfully deleted.
+    - `404`: Not Found.
+
+### Books
+
+- **Create a book**
+  - **URL:** `/books`
+  - **Method:** `POST`
+  - **Body:**
+    ```json
+    {
+      "title": "The Great Gatsby",
+      "year": 1925,
+      "authors": ["author-id-1", "author-id-2"]
+    }
+    ```
+  - **Responses:**
+    - `201`: The book has been successfully created.
+    - `400`: Bad Request.
+    - `500`: Internal Server Error.
+
+- **Get all books**
+  - **URL:** `/books`
+  - **Method:** `GET`
+  - **Responses:**
+    - `200`: The books have been successfully retrieved.
+
+- **Get a book by ID**
+  - **URL:** `/books/:id`
+  - **Method:** `GET`
+  - **Params:**
+    - `id`: The ID of the book
+  - **Responses:**
+    - `200`: The book has been successfully retrieved.
+    - `404`: Not Found.
+
+- **Update a book by ID**
+  - **URL:** `/books/:id`
+  - **Method:** `PATCH`
+  - **Params:**
+    - `id`: The ID of the book
+  - **Body:**
+    ```json
+    {
+      "title": "The Great Gatsby",
+      "year": 1925,
+      "authors": ["author-id-1", "author-id-2"]
+    }
+    ```
+  - **Responses:**
+    - `200`: The book has been successfully updated.
+    - `404`: Not Found.
+
+- **Delete a book by ID**
+  - **URL:** `/books/:id`
+  - **Method:** `DELETE`
+  - **Params:**
+    - `id`: The ID of the book
+  - **Responses:**
+    - `200`: The book has been successfully deleted.
+    - `404`: Not Found.
+
+- **Get authors by book ID**
+  - **URL:** `/books/:id/authors`
+  - **Method:** `GET`
+  - **Params:**
+    - `id`: The ID of the book
+  - **Responses:**
+    - `200`: The authors have been successfully retrieved.
+    - `404`: Not Found.
+
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:

@@ -5,8 +5,7 @@
             "name": "George Orwell",
             "email": "george.orwell@example.com",
             "books": [
-                "a1c4ef2b-12d7-45f3-a1aa-09fc8fdc9efb",
-                "2b18c684-2d15-4b98-95a7-3ef9d914d015"
+                "a1c4ef2b-12d7-45f3-a1aa-09fc8fdc9efb"
             ]
         },
         "dc8bff4b-33f2-41d5-bf60-6b9bb66b8474": {
@@ -61,8 +60,7 @@
             "name": "Leo Tolstoy",
             "email": "leo.tolstoy@example.com",
             "books": [
-                "fd7b620c-996d-464a-9d9d-1a69de773f32",
-                "3f1b13d9-2fdf-4fc5-bb9e-fcb0a2b45522"
+                "fd7b620c-996d-464a-9d9d-1a69de773f32"
             ]
         },
         "649ac8bc-c13b-4698-9b89-1ebfb12f6401": {

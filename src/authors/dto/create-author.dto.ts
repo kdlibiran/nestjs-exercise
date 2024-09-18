@@ -1,33 +1,14 @@
-import {
-    IsString,
-    IsNotEmpty,
-    IsEmail,
-    IsArray
-} from 'class-validator';
-import { IAuthor } from 'src/types/data.interface';
+import { OmitType } from '@nestjs/mapped-types';
+import { Author } from 'src/types/data.interface';
+import { IsString, IsArray } from 'class-validator';
 
-export class CreateAuthorDto implements Omit<IAuthor, "id"> {
-    @IsNotEmpty({
-        message: 'Name cannot be empty.'
-    })
-    @IsString({
-        message: `Name has to be a string`
-    })
-    readonly name: string;
-
-    @IsNotEmpty({
-        message: 'Email cannot be empty.'
-    })
-    @IsString({
-        message: `Email has to be a string`
-    })
-    @IsEmail({}, {
-        message: 'Email is not valid.'
-    })
-    readonly email: string;
-
+export class CreateAuthorDto extends OmitType(Author, ['id']) {
     @IsArray({
         message: 'Books has to be an array.'
+    })
+    @IsString({
+        each: true,
+        message: 'Books has to be an array of strings.'
     })
     readonly books: string[];
 }

@@ -1,33 +1,70 @@
+import { IsString, IsEmail, IsNotEmpty, IsArray, IsInt, Max } from 'class-validator';
+
+export interface Identifiable {
+    id: string;
+}
+
+export class AbstractObject implements Identifiable {
+    id!: string;
+}
+
+export class Book extends AbstractObject {
+    @IsNotEmpty({
+        message: 'Title cannot be empty.'
+    })
+    @IsString({
+        message: `Title has to be a string`
+    })
+    title!: string;
+    @IsNotEmpty({
+        message: 'Year cannot be empty.'
+    })
+    @IsInt({
+        message: `Year has to be an integer.`
+    })
+    @Max(new Date().getFullYear(), {
+        message: `Year cannot be greater than the current year.`
+    })
+    year!: number;
+    @IsArray({
+        message: 'Authors has to be an array.'
+    })
+    authors!: string[] | Omit<Author, "books">[];
+}
+
+export class Author extends AbstractObject {
+    @IsNotEmpty({
+        message: 'Name cannot be empty.'
+    })
+    @IsString({
+        message: `Name has to be a string`
+    })
+    name!: string;
+    
+    @IsString()
+    @IsNotEmpty({
+        message: 'Email cannot be empty.'
+    })
+    @IsString({
+        message: `Email has to be a string`
+    })
+    @IsEmail({}, {
+        message: 'Email is not valid.'
+    })
+    email!: string;
+    @IsArray({
+        message: 'Books has to be an array.'
+    })
+    books!: string[] | Omit<Book, "authors">[];
+}
+
+export interface IAuthors {
+    [id: string]: Author;
+}
+export interface IBooks {
+    [id: string]: Book;
+}
 export interface IData {
     authors: IAuthors;
     books: IBooks;
 }
-export interface IAuthors {
-    [id: string]: IAuthor;
-}
-
-export interface IBooks {
-    [id: string]: IBook;
-}
-export interface IObj {
-    id: string;
-}
-
-export type IAuthor = IObj & {
-    name: string;
-    email: string;
-    books: string[];
-}
-
-export type IBook = IObj & {
-    title: string;
-    year: number;
-    authors: string[];
-}
-
-export type IBooksWithAuthors = Omit<IBook, "authors"> & {
-    authors: Omit<IAuthor, "books">[];
-};
-export type IAuthorsWithBooks = Omit<IAuthor, "books"> & {
-    books: Omit<IBook, "authors">[];
-};

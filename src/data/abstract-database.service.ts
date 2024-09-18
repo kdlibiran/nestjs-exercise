@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { IObj } from '../types/data.interface';
+import { AbstractObject } from '../types/data.interface';
 
 @Injectable()
-export class AbstractDatabaseService<Type extends IObj> {
+export class AbstractDatabaseService<Type extends AbstractObject> {
     private array: { [key: string]: Type } = {};
     private transactionArray: { [key: string]: Type } | null = null;
 
@@ -14,10 +14,13 @@ export class AbstractDatabaseService<Type extends IObj> {
         return this.transactionArray || this.array;
     }
 
-    create(obj: Type): Type {
-        const targetArray = this.getArray();
-        targetArray[obj.id] = obj;
-        return obj;
+    findOne(id: string): Type {
+        return this.getArray()[id];
+    }
+
+    findOneWithoutRelation(id: string, relatedField: keyof Type): Omit<Type, keyof Type> {
+        const { [relatedField as keyof Type]: relatedIds, ...entityWithoutRelatedIds } = this.findOne(id);
+        return entityWithoutRelatedIds;
     }
 
     findAll(): Type[] {
@@ -28,8 +31,20 @@ export class AbstractDatabaseService<Type extends IObj> {
         return Object.values(this.getArray()).filter((obj: Type) => obj[property] === value);
     }
 
-    findOne(id: string): Type {
-        return this.getArray()[id];
+    //Get all entities that have a related field with the value
+    findRelatedEntities(relatedField: keyof Type, relatedId: string): Type[] {
+        return Object.values(this.getArray()).filter((obj: Type) => (obj[relatedField] as string[]).includes(relatedId));
+    }
+
+    //Get all entities that have a related field with the value, but without the related field
+    findRelatedEntitiesWithoutRelated(relatedField: keyof Type, relatedId: string): Omit<Type, keyof Type>[] {
+        return this.findRelatedEntities(relatedField, relatedId).map(({ [relatedField]: relatedIds, ...rest }) => rest);
+    }
+
+    create(obj: Type): Type {
+        const targetArray = this.getArray();
+        targetArray[obj.id] = obj;
+        return obj;
     }
 
     update(id: string, obj: Type): Type {
@@ -41,6 +56,28 @@ export class AbstractDatabaseService<Type extends IObj> {
     delete(id: string): void {
         const targetArray = this.getArray();
         delete targetArray[id];
+    }
+
+    addRelatedEntity(entityId: string, relatedId: string, relatedField: keyof Type): void {
+        const targetArray = this.getArray();
+        const entity = targetArray[entityId];
+        (entity[relatedField] as string[]).push(relatedId);
+        targetArray[entityId] = entity;
+    }
+
+    removeRelatedEntity(entityId: string, relatedId: string, relatedField: keyof Type): void {
+        const targetArray = this.getArray();
+        const entity = targetArray[entityId];
+        (entity[relatedField] as string[]).splice((entity[relatedField] as string[]).indexOf(relatedId), 1);
+        targetArray[entityId] = entity;
+    }
+
+    async addRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): Promise<void> {
+        entityIds.forEach(entityId => this.addRelatedEntity(entityId, relatedId, relatedField));
+    }
+
+    async removeRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): Promise<void> {
+        entityIds.forEach(entityId => this.removeRelatedEntity(entityId, relatedId, relatedField));
     }
 
     startTransaction(): void {

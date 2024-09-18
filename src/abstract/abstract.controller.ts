@@ -1,24 +1,23 @@
-import { Get, Param, Delete } from '@nestjs/common';
+import { Get, Param, Delete, Post, Body } from '@nestjs/common';
 import { AbstractService } from './abstract.service';
-import { IObj } from '../types/data.interface';
+import { AbstractObject } from '../types/data.interface';
 
 export class AbstractController<
-  MainType extends IObj,
-  RelatedType extends IObj,
-  ReturnType extends IObj,
+  MainType extends AbstractObject,
+  RelatedType extends AbstractObject,
 > {
   constructor(
-    private readonly service: AbstractService<MainType, RelatedType, ReturnType>,
+    private readonly service: AbstractService<MainType, RelatedType>,
   ) {}
 
   @Get()
-  async findAll(): Promise<ReturnType[]> {
-    return this.service.findAllWithRelated();
+  async findAll(): Promise<MainType[]> {
+    return this.service.findAllComplete();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ReturnType> {
-    return this.service.findOneWithRelated(id);
+  async findOne(@Param('id') id: string): Promise<MainType> {
+    return this.service.findOneComplete(id);
   }
 
   @Delete(':id')

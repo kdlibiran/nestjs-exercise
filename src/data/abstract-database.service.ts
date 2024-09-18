@@ -17,12 +17,6 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
     findOne(id: string): Type {
         return this.getArray()[id];
     }
-
-    findOneWithoutRelatedField(id: string, relatedField: keyof Type): Omit<Type, keyof Type> {
-        const { [relatedField as keyof Type]: relatedIds, ...entityWithoutRelatedIds } = this.findOne(id);
-        return entityWithoutRelatedIds;
-    }
-
     findAll(): Type[] {
         return Object.values(this.getArray());
     }
@@ -69,33 +63,11 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
         targetArray[entityId] = entity;
     }
 
-    async addRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): Promise<void> {
+    addRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): void {
         entityIds.forEach(entityId => this.addRelatedEntity(entityId, relatedId, relatedField));
     }
 
-    async removeRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): Promise<void> {
+    removeRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): void {
         entityIds.forEach(entityId => this.removeRelatedEntity(entityId, relatedId, relatedField));
-    }
-
-    startTransaction(): void {
-        if (this.transactionArray) {
-            throw new Error('Transaction already in progress');
-        }
-        this.transactionArray = { ...this.array };
-    }
-
-    commit(): void {
-        if (!this.transactionArray) {
-            throw new Error('No transaction in progress');
-        }
-        this.array = this.transactionArray;
-        this.transactionArray = null;
-    }
-
-    rollback(): void {
-        if (!this.transactionArray) {
-            throw new Error('No transaction in progress');
-        }
-        this.transactionArray = null;
     }
 }

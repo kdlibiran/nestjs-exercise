@@ -70,14 +70,14 @@ export class AbstractService<
       return this.findOneComplete(updatedEntity.id);
   }
 
-  async remove(id: string): Promise<{ message: string }> {
+  remove(id: string): { message: string } {
       const entity = this.findOne(id);
       this.mainDatabaseService.delete(id);
       this.relatedDatabaseService.removeRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
       return { message: `${String(this.mainField)} with id ${id} deleted` };
   }
 
-  async addRelatedEntity(entityId: string, relatedId: string): Promise<MainType> {
+  addRelatedEntity(entityId: string, relatedId: string): MainType {
       const entity = this.findOne(entityId);
       this.findOneFromRelated(relatedId); //For validation
       const updatedEntity = this.mainDatabaseService.update(entityId, {
@@ -88,7 +88,7 @@ export class AbstractService<
       return this.findOneComplete(updatedEntity.id);
   }
 
-  async removeRelatedEntity(entityId: string, relatedId: string): Promise<MainType> {
+  removeRelatedEntity(entityId: string, relatedId: string): MainType {
       const entity = this.findOne(entityId);
       const updatedEntity = this.mainDatabaseService.update(entityId, {
         ...entity,

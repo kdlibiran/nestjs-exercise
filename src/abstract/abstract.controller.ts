@@ -11,17 +11,17 @@ export class AbstractController<
   ) {}
 
   @Get()
-  async findAll(): Promise<MainType[]> {
+  findAll(): MainType[] {
     return this.service.findAllComplete();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<MainType> {
+  findOne(@Param('id') id: string): MainType {
     return this.service.findOneComplete(id);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<{message: string}> {
+  remove(@Param('id') id: string): {message: string} {
     return this.service.remove(id);
   }
 }

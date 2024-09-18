@@ -12,22 +12,22 @@ export class BooksController extends AbstractController<Book, Author> {
   }
 
   @Post()
-  async create(@Body() createDto: CreateBookDto): Promise<Book> {
+  create(@Body() createDto: CreateBookDto): Book {
     return this.booksService.create(createDto);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateDto: UpdateBookDto): Promise<Book> {
+  update(@Param('id') id: string, @Body() updateDto: UpdateBookDto): Book {
     return this.booksService.update(id, updateDto);
   }
 
   @Post(':id/authors/:authorId')
-  async addAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Promise<Book> {
+  addAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Book {
     return this.booksService.addRelatedEntity(id, authorId);
   }
 
   @Delete(':id/authors/:authorId')
-  async removeAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Promise<Book> {
+  removeAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Book {
     return this.booksService.removeRelatedEntity(id, authorId);
   }
 }

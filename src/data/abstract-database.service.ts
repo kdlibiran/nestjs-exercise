@@ -3,64 +3,54 @@ import { AbstractObject } from '../types/data.interface';
 
 @Injectable()
 export class AbstractDatabaseService<Type extends AbstractObject> {
-    private array: { [key: string]: Type } = {};
-    private transactionArray: { [key: string]: Type } | null = null;
+    private data: { [key: string]: Type } = {};
 
-    constructor(initialArray: { [key: string]: Type } = {}) {
-        this.array = { ...initialArray };
-    }
-
-    private getArray(): { [key: string]: Type } {
-        return this.transactionArray || this.array;
+    constructor(initialData: { [key: string]: Type } = {}) {
+        this.data = { ...initialData };
     }
 
     findOne(id: string): Type {
-        return this.getArray()[id];
+        return this.data[id];
     }
     findAll(): Type[] {
-        return Object.values(this.getArray());
+        return Object.values(this.data);
     }
 
     findAllByProperty(property: keyof Type, value: any): Type[] {
-        return Object.values(this.getArray()).filter((obj: Type) => obj[property] === value);
+        return Object.values(this.data).filter((obj: Type) => obj[property] === value);
     }
 
     findRelatedEntities(relatedField: keyof Type, relatedId: string): Omit<Type, keyof Type>[] {
-        return Object.values(this.getArray())
+        return Object.values(this.data)
             .filter((obj: Type) => (obj[relatedField] as string[])
             .includes(relatedId))
             .map(({ [relatedField]: relatedIds, ...rest }) => rest);
     }
 
     create(obj: Type): Type {
-        const targetArray = this.getArray();
-        targetArray[obj.id] = obj;
+        this.data[obj.id] = obj;
         return obj;
     }
 
     update(id: string, obj: Type): Type {
-        const targetArray = this.getArray();
-        targetArray[id] = obj;
+        this.data[id] = obj;
         return obj;
     }
 
     delete(id: string): void {
-        const targetArray = this.getArray();
-        delete targetArray[id];
+        delete this.data[id];
     }
 
     addRelatedEntity(entityId: string, relatedId: string, relatedField: keyof Type): void {
-        const targetArray = this.getArray();
-        const entity = targetArray[entityId];
+        const entity = this.data[entityId];
         (entity[relatedField] as string[]).push(relatedId);
-        targetArray[entityId] = entity;
+        this.data[entityId] = entity;
     }
 
     removeRelatedEntity(entityId: string, relatedId: string, relatedField: keyof Type): void {
-        const targetArray = this.getArray();
-        const entity = targetArray[entityId];
+        const entity = this.data[entityId];
         (entity[relatedField] as string[]).splice((entity[relatedField] as string[]).indexOf(relatedId), 1);
-        targetArray[entityId] = entity;
+        this.data[entityId] = entity;
     }
 
     addRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): void {

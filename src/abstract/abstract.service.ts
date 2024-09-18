@@ -15,19 +15,6 @@ export class AbstractService<
     private readonly mainField: keyof RelatedType,
     private readonly relatedField: keyof MainType,
   ) {}
-  //Helpers
-  findOneFromRelated(id: string): void { // Only used for validation
-    const entity = this.relatedDatabaseService.findOne(id);
-    if (!entity) {
-      throw new NotFoundException(`Cannot find ${String(this.relatedField)} with id ${id}`);
-    }
-  }
-
-  findAllFromRelated(ids: string[]): void { // Only used for validation
-    for (const id of ids) {
-      this.findOneFromRelated(id);
-    }
-  }
 
   findOne(id: string): MainType {
     const entity = this.mainDatabaseService.findOne(id);
@@ -42,9 +29,9 @@ export class AbstractService<
   }
 
   findOneComplete(id: string): MainType {
-    const { [this.relatedField]: relatedField, ...entity } = this.findOne(id);
+    const entity = this.findOne(id);
     const relatedEntities = this.relatedDatabaseService.findRelatedEntities(this.mainField, id);
-    return { ...entity, [this.relatedField]: relatedEntities } as unknown as MainType;
+    return { ...entity, [this.relatedField]: relatedEntities };
   }
 
   findAllComplete(): MainType[] {
@@ -54,7 +41,7 @@ export class AbstractService<
 
   create(createDto: Omit<MainType, "id">): MainType {
     this.findAllFromRelated(createDto[this.relatedField as string]); // For validation
-    const entity = this.mainDatabaseService.create({ ...createDto, id: uuidv4() } as unknown as MainType);
+    const entity = this.mainDatabaseService.create({ id: uuidv4(), ...createDto } as MainType);
     this.relatedDatabaseService.addRelatedEntities(entity.id, createDto[this.relatedField as string], this.mainField);
     return this.findOneComplete(entity.id);
   }
@@ -96,5 +83,18 @@ export class AbstractService<
       });
       this.relatedDatabaseService.removeRelatedEntity(relatedId, entityId, this.mainField);
       return this.findOneComplete(updatedEntity.id);
+  }
+
+  findOneFromRelated(id: string): void { // Only used for validation
+    const entity = this.relatedDatabaseService.findOne(id);
+    if (!entity) {
+      throw new NotFoundException(`Cannot find ${String(this.relatedField)} with id ${id}`);
+    }
+  }
+
+  findAllFromRelated(ids: string[]): void { // Only used for validation
+    for (const id of ids) {
+      this.findOneFromRelated(id);
+    }
   }
 }

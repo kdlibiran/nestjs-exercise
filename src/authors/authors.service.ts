@@ -5,7 +5,7 @@ import { BooksDatabaseService } from 'src/data/books-database.service';
 import { AuthorsDatabaseService } from 'src/data/authors-database.service';
 
 @Injectable()
-export class AuthorsService extends AbstractService<IAuthor, IBook, IAuthorsWithBooks, "authors", "books"> {
+export class AuthorsService extends AbstractService<IAuthor, IBook, IAuthorsWithBooks> {
   constructor(
     private readonly authorsDatabaseService: AuthorsDatabaseService,
     private readonly booksDatabaseService: BooksDatabaseService,

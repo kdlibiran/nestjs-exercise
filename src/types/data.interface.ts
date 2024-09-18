@@ -13,27 +13,21 @@ export interface IObj {
     id: string;
 }
 
-export type IObjWithRelated<T extends string> = IObj & {
-    [key in T]: string[];
-};
-
-export type IAuthor = IObjWithRelated<"books"> & {
+export type IAuthor = IObj & {
     name: string;
     email: string;
+    books: string[];
 }
 
-export type IBook = IObjWithRelated<"authors"> & {
+export type IBook = IObj & {
     title: string;
     year: number;
+    authors: string[];
 }
 
-export type ILibrary = IObjWithRelated<"books" | "authors"> & {
-    name: string;
-}
-
-export type IObjectWithRelated<T extends IObjWithRelated<Y>, R extends IObjWithRelated<X>, X extends string, Y extends string> = Omit<T, keyof Y> & {
-    [key in Y]: Omit<R, keyof X>[];
+export type IBooksWithAuthors = Omit<IBook, "authors"> & {
+    authors: Omit<IAuthor, "books">[];
 };
-
-export type IBooksWithAuthors = IObjectWithRelated<IBook, IAuthor, "books", "authors">;
-export type IAuthorsWithBooks = IObjectWithRelated<IAuthor, IBook, "authors", "books">;
+export type IAuthorsWithBooks = Omit<IAuthor, "books"> & {
+    books: Omit<IBook, "authors">[];
+};

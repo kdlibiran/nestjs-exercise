@@ -4,8 +4,8 @@ import { AbstractDatabaseService } from './abstract-database.service';
 import { IBook } from '../types/data.interface';
 
 @Injectable()
-export class BooksDatabaseService extends AbstractDatabaseService<IBook, "authors"> {
+export class BooksDatabaseService extends AbstractDatabaseService<IBook> {
     constructor() {
-        super(Data.books, "authors");
+        super(Data.books);
     }
 }

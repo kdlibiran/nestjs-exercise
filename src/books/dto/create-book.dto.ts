@@ -6,8 +6,9 @@ import {
     IsArray
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IBook } from 'src/types/data.interface';
 
-export class CreateBookDto {
+export class CreateBookDto implements Omit<IBook, "id"> {
     @ApiProperty({
         description: 'The title of the book',
         example: 'The Great Gatsby'

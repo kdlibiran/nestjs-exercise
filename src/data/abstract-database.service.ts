@@ -1,38 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { IObjWithRelated } from '../types/data.interface';
+import { IObj } from '../types/data.interface';
 
 @Injectable()
-export class AbstractDatabaseService<T extends IObjWithRelated<U>, U extends string> {
-    private array: { [key: string]: T } = {};
-    private transactionArray: { [key: string]: T } | null = null;
+export class AbstractDatabaseService<Type extends IObj> {
+    private array: { [key: string]: Type } = {};
+    private transactionArray: { [key: string]: Type } | null = null;
 
-    constructor(initialArray: { [key: string]: T } = {}, relatedId: U) {
+    constructor(initialArray: { [key: string]: Type } = {}) {
         this.array = { ...initialArray };
     }
 
-    private getArray(): { [key: string]: T } {
+    private getArray(): { [key: string]: Type } {
         return this.transactionArray || this.array;
     }
 
-    create(obj: T): T {
+    create(obj: Type): Type {
         const targetArray = this.getArray();
         targetArray[obj.id] = obj;
         return obj;
     }
 
-    findAll(): T[] {
+    findAll(): Type[] {
         return Object.values(this.getArray());
     }
 
-    findAllByProperty(property: keyof T, value: any): T[] {
-        return Object.values(this.getArray()).filter((obj: T) => obj[property] === value);
+    findAllByProperty(property: keyof Type, value: any): Type[] {
+        return Object.values(this.getArray()).filter((obj: Type) => obj[property] === value);
     }
 
-    findOne(id: string): T {
+    findOne(id: string): Type {
         return this.getArray()[id];
     }
 
-    update(id: string, obj: T): T {
+    update(id: string, obj: Type): Type {
         const targetArray = this.getArray();
         targetArray[id] = obj;
         return obj;

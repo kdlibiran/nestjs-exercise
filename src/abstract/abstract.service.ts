@@ -1,16 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { AbstractDatabaseService } from '../data/abstract-database.service';
-import { IObjWithRelated, IObjectWithRelated } from '../types/data.interface';
+import { IObjWithRelated } from '../types/data.interface';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-//AbstactService () <mainType, RelationType, mainWithRelationType, nameOfMain, nameOfRelation>
-//Those with T returns are usually just helper functions to make the code more readable
-//The ones with V returns are the ones that are used in the controllers
+//AbstactService () <mainType, RelationType, nameOfMain, nameOfRelation>
 export class AbstractService<
   T extends IObjWithRelated<Y>,
   U extends IObjWithRelated<X>,
-  V extends IObjectWithRelated<T, U, X, Y>,
   X extends string,
   Y extends string
 > {
@@ -33,14 +30,6 @@ export class AbstractService<
     }
   }
 
-  async create(createDto: Omit<T, 'id'>): Promise<V> {
-    return this.withTransaction(async () => {
-      const entity = this.mainDatabaseService.create({ ...createDto, id: uuidv4() } as T);
-      await this.updateRelatedEntities(entity.id, entity[this.relatedField], 'add');
-      return this.findOneWithRelated(entity.id);
-    });
-  }
-
   findAll(): T[] {
     return this.mainDatabaseService.findAll();
   }
@@ -48,22 +37,45 @@ export class AbstractService<
   findOne(id: string): T {
     const entity = this.mainDatabaseService.findOne(id);
     if (!entity) {
-      throw new NotFoundException(`Cannot find entity with id ${id}`);
+      throw new NotFoundException(`Cannot find ${this.mainField} with id ${id}`);
     }
     return entity;
   }
 
-  async update(id: string, updateDto: Partial<T>): Promise<V> {
+  async findAllRelated(relatedIds: string[]): Promise<Omit<U,X>[]> {
+    const relatedEntities: Promise<Omit<U,X>>[] = relatedIds.map(async (relatedId: string) => {
+      const relatedEntity = this.relatedDatabaseService.findOne(relatedId);
+      if (!relatedEntity) {
+        throw new NotFoundException(`Cannot find related ${this.relatedField} with id ${relatedId}`);
+      }
+      const { [this.mainField]: _, ...omittedRelatedEntity } = relatedEntity;
+      return omittedRelatedEntity;
+    });
+    return Promise.all(relatedEntities);
+  }
+
+  async create(createDto: Omit<T, 'id' | Y> & { [key in Y]: string[] }): Promise<T> {
+    return this.withTransaction(async () => {
+      const relatedEntities: Promise<Omit<U,X>>[] = createDto[this.relatedField].map(async (relatedId: string) => {
+        return this.relatedDatabaseService.findOne(relatedId);
+      });
+      const entity = this.mainDatabaseService.create({ id: uuidv4(), ...createDto, [this.relatedField]: relatedEntities } as unknown as T);
+      await this.updateRelatedEntities(entity.id, createDto[this.relatedField], 'add');
+      return entity;
+    });
+  }
+
+  async update(id: string, updateDto: Partial<Omit<T, 'id' | Y> & { [key in Y]: string[] }>): Promise<T> {
     return this.withTransaction(async () => {
       const entity = this.findOne(id);
-      const updatedEntity = this.mainDatabaseService.update(id, { ...entity, ...updateDto });
+      const relatedEntities: Promise<Omit<U,X>>[] = updateDto[this.relatedField].map(async (relatedId: string) => {
+        return this.relatedDatabaseService.findOne(relatedId);
+      });
+      const updatedEntity = this.mainDatabaseService.update(id, { ...entity, ...updateDto, [this.relatedField]: relatedEntities });
 
-      if (entity !== updatedEntity) {
-        await this.updateRelatedEntities(entity.id, entity[this.relatedField], 'remove');
-        await this.updateRelatedEntities(updatedEntity.id, updatedEntity[this.relatedField], 'add');
-      }
-
-      return this.findOneWithRelated(updatedEntity.id);
+      await this.updateRelatedEntities(entity.id, updateDto[this.relatedField], 'remove');
+      await this.updateRelatedEntities(updatedEntity.id, updateDto[this.relatedField], 'add');
+      return updatedEntity;
     });
   }
 
@@ -71,7 +83,8 @@ export class AbstractService<
     return this.withTransaction(async () => {
       const entity = this.findOne(id);
       await this.mainDatabaseService.delete(id);
-      await this.updateRelatedEntities(entity.id, entity[this.relatedField], 'remove');
+      const relatedIds = entity[this.relatedField].map(related => related.id);
+      await this.updateRelatedEntities(entity.id, relatedIds, 'remove');
       return { message: `Entity with id ${id} deleted` };
     });
   }
@@ -87,54 +100,39 @@ export class AbstractService<
         if (relatedEntity) {
           const updatedRelatedIds = mode === 'add'
             ? [...relatedEntity[this.mainField], entityId]
-            : relatedEntity[this.mainField].filter(id => id !== entityId);
+            : relatedEntity[this.mainField].filter((related) => related.id !== entityId);
           await this.relatedDatabaseService.update(relatedId, { ...relatedEntity, [this.mainField]: updatedRelatedIds });
         } else if (mode === 'add') {
-          throw new NotFoundException(`Cannot find related entity with id ${relatedId}`);
+          throw new NotFoundException(`Cannot find related ${this.relatedField} with id ${relatedId}`);
         }
       })
     );
   }
 
-  async addRelatedEntity(entityId: string, relatedId: string): Promise<V> {
+
+  async addRelatedEntity(entityId: string, relatedId: string): Promise<T> {
     return this.withTransaction(async () => {
       const entity = this.findOne(entityId);
+      const relatedEntity = this.relatedDatabaseService.findOne(relatedId);
+      const { [this.mainField]: _, ...relatedEntityWithoutMainField } = relatedEntity;
       const updatedEntity = await this.mainDatabaseService.update(entityId, {
         ...entity,
-        [this.relatedField]: [...entity[this.relatedField], relatedId]
+        [this.relatedField]: [...entity[this.relatedField], relatedEntityWithoutMainField]
       });
       await this.updateRelatedEntities(entityId, [relatedId], 'add');
-      return this.findOneWithRelated(updatedEntity.id);
+      return this.findOne(updatedEntity.id);
     });
   }
 
-  async removeRelatedEntity(entityId: string, relatedId: string): Promise<V> {
+  async removeRelatedEntity(entityId: string, relatedId: string): Promise<T> {
     return this.withTransaction(async () => {
       const entity = this.findOne(entityId);
       const updatedEntity = await this.mainDatabaseService.update(entityId, {
         ...entity,
-        [this.relatedField]: entity[this.relatedField].filter(id => id !== relatedId)
+        [this.relatedField]: entity[this.relatedField].filter((related) => related.id !== relatedId)
       });
       await this.updateRelatedEntities(entityId, [relatedId], 'remove');
-      return this.findOneWithRelated(updatedEntity.id);
+      return this.findOne(updatedEntity.id);
     });
-  }
-
-  async findRelatedEntity(entityId: string): Promise<U[]> {
-    const entity = this.findOne(entityId);
-    return Promise.all(entity[this.relatedField].map(relatedId => this.relatedDatabaseService.findOne(relatedId)));
-  }
-
-  async findOneWithRelated(id: string): Promise<V> {
-    const entity = this.findOne(id);
-    const { [this.relatedField]: relatedIds, ...entityWithoutRelatedIds } = entity;
-    const relatedEntities = await this.findRelatedEntity(id);
-    const relatedWithoutRelatedIds = relatedEntities.map(({ [this.mainField]: relatedIds, ...rest }) => rest);
-    return { ...entityWithoutRelatedIds, [this.relatedField]: relatedWithoutRelatedIds } as unknown as V;
-  }
-
-  async findAllWithRelated(): Promise<V[]> {
-    const entities = this.findAll();
-    return Promise.all(entities.map(entity => this.findOneWithRelated(entity.id)));
   }
 }

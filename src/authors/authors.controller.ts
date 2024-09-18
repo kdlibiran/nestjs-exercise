@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } 
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
-import { IAuthorsWithBooks } from 'src/types/data.interface';
+import { IAuthor } from 'src/types/data.interface';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Authors')
@@ -16,7 +16,7 @@ export class AuthorsController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   @Post()
-  async create(@Body() createAuthorDto: CreateAuthorDto): Promise<IAuthorsWithBooks> {
+  async create(@Body() createAuthorDto: CreateAuthorDto): Promise<IAuthor> {
     try {
       return this.authorsService.create(createAuthorDto);
     } catch (error) {
@@ -27,8 +27,8 @@ export class AuthorsController {
   @ApiOperation({ summary: 'Get all authors' })
   @ApiResponse({ status: 200, description: 'The authors have been successfully retrieved.' })
   @Get()
-  async findAll(): Promise<IAuthorsWithBooks[]> {
-    return this.authorsService.findAllWithRelated();
+  async findAll(): Promise<IAuthor[]> {
+    return this.authorsService.findAll();
   }
 
   @ApiOperation({ summary: 'Get an author by ID' })
@@ -36,8 +36,8 @@ export class AuthorsController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<IAuthorsWithBooks> {
-    return this.authorsService.findOneWithRelated(id);
+  async findOne(@Param('id') id: string): Promise<IAuthor> {
+    return this.authorsService.findOne(id);
   }
 
   @ApiOperation({ summary: 'Update an author by ID' })
@@ -45,7 +45,7 @@ export class AuthorsController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto): Promise<IAuthorsWithBooks> {
+  async update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto): Promise<IAuthor> {
     return this.authorsService.update(id, updateAuthorDto);
   }
 
@@ -64,7 +64,7 @@ export class AuthorsController {
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @ApiParam({ name: 'bookId', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
   @Post(':id/books/:bookId')
-  async addBook(@Param('id') id: string, @Param('bookId') bookId: string): Promise<IAuthorsWithBooks> {
+  async addBook(@Param('id') id: string, @Param('bookId') bookId: string): Promise<IAuthor> {
     return this.authorsService.addRelatedEntity(id, bookId);
   }
 
@@ -74,7 +74,7 @@ export class AuthorsController {
   @ApiParam({ name: 'id', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @ApiParam({ name: 'bookId', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
   @Delete(':id/books/:bookId')
-  async removeBook(@Param('id') id: string, @Param('bookId') bookId: string): Promise<IAuthorsWithBooks> {
+  async removeBook(@Param('id') id: string, @Param('bookId') bookId: string): Promise<IAuthor> {
     return this.authorsService.removeRelatedEntity(id, bookId);
   }
 }

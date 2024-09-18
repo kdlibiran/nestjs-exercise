@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { IBooksWithAuthors } from '../types/data.interface';
+import { IBook } from '../types/data.interface';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Books')
@@ -15,7 +15,7 @@ export class BooksController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
   @Post()
-  async create(@Body() createBookDto: CreateBookDto): Promise<IBooksWithAuthors> {
+  async create(@Body() createBookDto: CreateBookDto): Promise<IBook> {
     return this.booksService.create(createBookDto);
 
   }
@@ -23,8 +23,8 @@ export class BooksController {
   @ApiOperation({ summary: 'Get all books' })
   @ApiResponse({ status: 200, description: 'The books have been successfully retrieved.' })
   @Get()
-  async findAll(): Promise<IBooksWithAuthors[]> {
-    return this.booksService.findAllWithRelated();
+  async findAll(): Promise<IBook[]> {
+    return this.booksService.findAll();
   }
 
   @ApiOperation({ summary: 'Get a book by ID' })
@@ -32,8 +32,8 @@ export class BooksController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<IBooksWithAuthors> {
-    return this.booksService.findOneWithRelated(id);
+  async findOne(@Param('id') id: string): Promise<IBook> {
+    return this.booksService.findOne(id);
   }
 
   @ApiOperation({ summary: 'Update a book by ID' })
@@ -41,7 +41,7 @@ export class BooksController {
   @ApiResponse({ status: 404, description: 'Not Found.' })
   @ApiParam({ name: 'id', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto):Promise<IBooksWithAuthors> {
+  async update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto):Promise<IBook> {
     return this.booksService.update(id, updateBookDto);
   }
 
@@ -60,7 +60,7 @@ export class BooksController {
   @ApiParam({ name: 'id', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
   @ApiParam({ name: 'authorId', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @Post(':id/authors/:authorId')
-  async addAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Promise<IBooksWithAuthors> {
+  async addAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Promise<IBook> {
     return this.booksService.addRelatedEntity(id, authorId);
   }
 
@@ -70,7 +70,7 @@ export class BooksController {
   @ApiParam({ name: 'id', type: String, description: 'The ID of the book', example: '43d9e0f4-bd52-4641-8e70-3b874e123e79' })
   @ApiParam({ name: 'authorId', type: String, description: 'The ID of the author', example: 'dc8bff4b-33f2-41d5-bf60-6b9bb66b8474' })
   @Delete(':id/authors/:authorId')
-  async removeAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Promise<IBooksWithAuthors> {
+  async removeAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Promise<IBook> {
     return this.booksService.removeRelatedEntity(id, authorId);
   }
 }

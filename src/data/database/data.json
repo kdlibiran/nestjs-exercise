@@ -5,7 +5,11 @@
             "name": "George Orwell",
             "email": "george.orwell@example.com",
             "books": [
-                "a1c4ef2b-12d7-45f3-a1aa-09fc8fdc9efb"
+                {
+                    "id": "a1c4ef2b-12d7-45f3-a1aa-09fc8fdc9efb",
+                    "title": "1984",
+                    "year": 1949
+                }
             ]
         },
         "dc8bff4b-33f2-41d5-bf60-6b9bb66b8474": {
@@ -13,29 +17,57 @@
             "name": "J.K. Rowling",
             "email": "jk.rowling@example.com",
             "books": [
-                "43d9e0f4-bd52-4641-8e70-3b874e123e79",
-                "5beaba57-1b55-48c7-bd09-b7cf5c9e9d89"
+                {
+                    "id": "43d9e0f4-bd52-4641-8e70-3b874e123e79",
+                    "title": "Harry Potter and the Philosopher's Stone",
+                    "year": 1997
+                },
+                {
+                    "id": "5beaba57-1b55-48c7-bd09-b7cf5c9e9d89",
+                    "title": "Harry Potter and the Chamber of Secrets",
+                    "year": 1998
+                }
             ]
         },
         "a2c0bbf1-1c3a-451b-bf9f-e7e515b8a67c": {
             "id": "a2c0bbf1-1c3a-451b-bf9f-e7e515b8a67c",
             "name": "Ernest Hemingway",
             "email": "ernest.hemingway@example.com",
-            "books": ["d159b5a1-66f1-4d15-95d6-ecfc85c5242b"]
+            "books": [
+                {
+                    "id": "d159b5a1-66f1-4d15-95d6-ecfc85c5242b",
+                    "title": "The Old Man and the Sea",
+                    "year": 1952
+                }
+            ]
         },
         "e38d5fbc-58e4-4f98-8e3a-fb8dcf9952ed": {
             "id": "e38d5fbc-58e4-4f98-8e3a-fb8dcf9952ed",
             "name": "Jane Austen",
             "email": "jane.austen@example.com",
-            "books": ["a76182ff-55fb-4076-9f9a-8b3ff2366cc9"]
+            "books": [
+                {
+                    "id": "a76182ff-55fb-4076-9f9a-8b3ff2366cc9",
+                    "title": "Pride and Prejudice",
+                    "year": 1813
+                }
+            ]
         },
         "aa52612f-08e9-4d82-9364-c72c1b6d31c4": {
             "id": "aa52612f-08e9-4d82-9364-c72c1b6d31c4",
             "name": "Mark Twain",
             "email": "mark.twain@example.com",
             "books": [
-                "cf9f57b5-5d23-4cb1-b6d1-204a6d19d89f",
-                "5beaba57-1b55-48c7-bd09-b7cf5c9e9d89"
+                {
+                    "id": "cf9f57b5-5d23-4cb1-b6d1-204a6d19d89f",
+                    "title": "The Adventures of Tom Sawyer",
+                    "year": 1876
+                },
+                {
+                    "id": "5beaba57-1b55-48c7-bd09-b7cf5c9e9d89",
+                    "title": "Harry Potter and the Chamber of Secrets",
+                    "year": 1998
+                }
             ]
         },
         "9aafaa2f-556d-45cf-957d-27a4e18f1cfb": {
@@ -43,8 +75,16 @@
             "name": "Agatha Christie",
             "email": "agatha.christie@example.com",
             "books": [
-                "d456f83b-08b1-4cbe-b134-ef6fd1c29015",
-                "43d9e0f4-bd52-4641-8e70-3b874e123e79"
+                {
+                    "id": "d456f83b-08b1-4cbe-b134-ef6fd1c29015",
+                    "title": "Murder on the Orient Express",
+                    "year": 1934
+                },
+                {
+                    "id": "43d9e0f4-bd52-4641-8e70-3b874e123e79",
+                    "title": "Harry Potter and the Philosopher's Stone",
+                    "year": 1997
+                }
             ]
         },
         "f5ed81b9-9d5e-40c1-902f-06c1e7c1d4f9": {
@@ -52,7 +92,11 @@
             "name": "F. Scott Fitzgerald",
             "email": "f.scott.fitzgerald@example.com",
             "books": [
-                "e7bcb3fb-8367-49fb-9b1e-5ef88fc0ddcd"
+                {
+                    "id": "e7bcb3fb-8367-49fb-9b1e-5ef88fc0ddcd",
+                    "title": "The Great Gatsby",
+                    "year": 1925
+                }
             ]
         },
         "5cf7bcaf-474a-41d2-8827-505d761cf3c9": {
@@ -60,7 +104,11 @@
             "name": "Leo Tolstoy",
             "email": "leo.tolstoy@example.com",
             "books": [
-                "fd7b620c-996d-464a-9d9d-1a69de773f32"
+                {
+                    "id": "fd7b620c-996d-464a-9d9d-1a69de773f32",
+                    "title": "War and Peace",
+                    "year": 1869
+                }
             ]
         },
         "649ac8bc-c13b-4698-9b89-1ebfb12f6401": {
@@ -68,7 +116,11 @@
             "name": "Charles Dickens",
             "email": "charles.dickens@example.com",
             "books": [
-                "feab7c62-d13b-4f8e-b837-129f74f0121c"
+                {
+                    "id": "feab7c62-d13b-4f8e-b837-129f74f0121c",
+                    "title": "To Kill a Mockingbird",
+                    "year": 1960
+                }
             ]
         },
         "869be08d-b46b-4899-9b5f-d14bc1b0fd0b": {
@@ -76,7 +128,11 @@
             "name": "Harper Lee",
             "email": "harper.lee@example.com",
             "books": [
-                "feab7c62-d13b-4f8e-b837-129f74f0121c"
+                {
+                    "id": "feab7c62-d13b-4f8e-b837-129f74f0121c",
+                    "title": "To Kill a Mockingbird",
+                    "year": 1960
+                }
             ]
         }
     },
@@ -84,15 +140,29 @@
         "a1c4ef2b-12d7-45f3-a1aa-09fc8fdc9efb": {
             "id": "a1c4ef2b-12d7-45f3-a1aa-09fc8fdc9efb",
             "title": "1984",
-            "authors": ["b7d5d3b1-2f97-453a-a7c9-4ef9a5d194b6"],
+            "authors": [
+                {
+                    "id": "b7d5d3b1-2f97-453a-a7c9-4ef9a5d194b6",
+                    "name": "George Orwell",
+                    "email": "george.orwell@example.com"
+                }
+            ],
             "year": 1949
         },
         "43d9e0f4-bd52-4641-8e70-3b874e123e79": {
             "id": "43d9e0f4-bd52-4641-8e70-3b874e123e79",
             "title": "Harry Potter and the Philosopher's Stone",
             "authors": [
-                "dc8bff4b-33f2-41d5-bf60-6b9bb66b8474",
-                "9aafaa2f-556d-45cf-957d-27a4e18f1cfb"
+                {
+                    "id": "dc8bff4b-33f2-41d5-bf60-6b9bb66b8474",
+                    "name": "J.K. Rowling",
+                    "email": "jk.rowling@example.com"
+                },
+                {
+                    "id": "9aafaa2f-556d-45cf-957d-27a4e18f1cfb",
+                    "name": "Agatha Christie",
+                    "email": "agatha.christie@example.com"
+                }
             ],
             "year": 1997
         },
@@ -100,53 +170,105 @@
             "id": "5beaba57-1b55-48c7-bd09-b7cf5c9e9d89",
             "title": "Harry Potter and the Chamber of Secrets",
             "authors": [
-                "dc8bff4b-33f2-41d5-bf60-6b9bb66b8474",
-                "aa52612f-08e9-4d82-9364-c72c1b6d31c4"
+                {
+                    "id": "dc8bff4b-33f2-41d5-bf60-6b9bb66b8474",
+                    "name": "J.K. Rowling",
+                    "email": "jk.rowling@example.com"
+                },
+                {
+                    "id": "aa52612f-08e9-4d82-9364-c72c1b6d31c4",
+                    "name": "Mark Twain",
+                    "email": "mark.twain@example.com"
+                }
             ],
             "year": 1998
         },
         "d159b5a1-66f1-4d15-95d6-ecfc85c5242b": {
             "id": "d159b5a1-66f1-4d15-95d6-ecfc85c5242b",
             "title": "The Old Man and the Sea",
-            "authors": ["a2c0bbf1-1c3a-451b-bf9f-e7e515b8a67c"],
+            "authors": [
+                {
+                    "id": "a2c0bbf1-1c3a-451b-bf9f-e7e515b8a67c",
+                    "name": "Ernest Hemingway",
+                    "email": "ernest.hemingway@example.com"
+                }
+            ],
             "year": 1952
         },
         "a76182ff-55fb-4076-9f9a-8b3ff2366cc9": {
             "id": "a76182ff-55fb-4076-9f9a-8b3ff2366cc9",
             "title": "Pride and Prejudice",
-            "authors": ["e38d5fbc-58e4-4f98-8e3a-fb8dcf9952ed"],
+            "authors": [
+                {
+                    "id": "e38d5fbc-58e4-4f98-8e3a-fb8dcf9952ed",
+                    "name": "Jane Austen",
+                    "email": "jane.austen@example.com"
+                }
+            ],
             "year": 1813
         },
         "cf9f57b5-5d23-4cb1-b6d1-204a6d19d89f": {
             "id": "cf9f57b5-5d23-4cb1-b6d1-204a6d19d89f",
             "title": "The Adventures of Tom Sawyer",
-            "authors": ["aa52612f-08e9-4d82-9364-c72c1b6d31c4"],
+            "authors": [
+                {
+                    "id": "aa52612f-08e9-4d82-9364-c72c1b6d31c4",
+                    "name": "Mark Twain",
+                    "email": "mark.twain@example.com"
+                }
+            ],
             "year": 1876
         },
         "d456f83b-08b1-4cbe-b134-ef6fd1c29015": {
             "id": "d456f83b-08b1-4cbe-b134-ef6fd1c29015",
             "title": "Murder on the Orient Express",
-            "authors": ["9aafaa2f-556d-45cf-957d-27a4e18f1cfb"],
+            "authors": [
+                {
+                    "id": "9aafaa2f-556d-45cf-957d-27a4e18f1cfb",
+                    "name": "Agatha Christie",
+                    "email": "agatha.christie@example.com"
+                }
+            ],
             "year": 1934
         },
         "e7bcb3fb-8367-49fb-9b1e-5ef88fc0ddcd": {
             "id": "e7bcb3fb-8367-49fb-9b1e-5ef88fc0ddcd",
             "title": "The Great Gatsby",
-            "authors": ["f5ed81b9-9d5e-40c1-902f-06c1e7c1d4f9"],
+            "authors": [
+                {
+                    "id": "f5ed81b9-9d5e-40c1-902f-06c1e7c1d4f9",
+                    "name": "F. Scott Fitzgerald",
+                    "email": "f.scott.fitzgerald@example.com"
+                }
+            ],
             "year": 1925
         },
         "fd7b620c-996d-464a-9d9d-1a69de773f32": {
             "id": "fd7b620c-996d-464a-9d9d-1a69de773f32",
             "title": "War and Peace",
-            "authors": ["5cf7bcaf-474a-41d2-8827-505d761cf3c9"],
+            "authors": [
+                {
+                    "id": "5cf7bcaf-474a-41d2-8827-505d761cf3c9",
+                    "name": "Leo Tolstoy",
+                    "email": "leo.tolstoy@example.com"
+                }
+            ],
             "year": 1869
         },
         "feab7c62-d13b-4f8e-b837-129f74f0121c": {
             "id": "feab7c62-d13b-4f8e-b837-129f74f0121c",
             "title": "To Kill a Mockingbird",
             "authors": [
-                "649ac8bc-c13b-4698-9b89-1ebfb12f6401",
-                "869be08d-b46b-4899-9b5f-d14bc1b0fd0b"
+                {
+                    "id": "649ac8bc-c13b-4698-9b89-1ebfb12f6401",
+                    "name": "Charles Dickens",
+                    "email": "charles.dickens@example.com"
+                },
+                {
+                    "id": "869be08d-b46b-4899-9b5f-d14bc1b0fd0b",
+                    "name": "Harper Lee",
+                    "email": "harper.lee@example.com"
+                }
             ],
             "year": 1960
         }

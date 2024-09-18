@@ -65,24 +65,17 @@ export class AbstractService<
   }
 
   addRelatedEntity(entityId: string, relatedId: string): MainType {
-      const entity = this.findOne(entityId);
-      this.findOneFromRelated(relatedId); //For validation
-      const updatedEntity = this.mainDatabaseService.update(entityId, {
-        ...entity,
-        [this.relatedField]: [...entity[this.relatedField] as string[], relatedId]
-      });
+      this.findOne(entityId); // For validation
+      this.mainDatabaseService.addRelatedEntity(entityId, relatedId, this.relatedField);
       this.relatedDatabaseService.addRelatedEntity(relatedId, entityId, this.mainField);
-      return this.findOneComplete(updatedEntity.id);
+      return this.findOneComplete(entityId);
   }
 
   removeRelatedEntity(entityId: string, relatedId: string): MainType {
-      const entity = this.findOne(entityId);
-      const updatedEntity = this.mainDatabaseService.update(entityId, {
-        ...entity,
-        [this.relatedField]: (entity[this.relatedField] as string[]).filter(id => id !== relatedId)
-      });
+      this.findOne(entityId); // For validation
+      this.mainDatabaseService.removeRelatedEntity(entityId, relatedId, this.relatedField);
       this.relatedDatabaseService.removeRelatedEntity(relatedId, entityId, this.mainField);
-      return this.findOneComplete(updatedEntity.id);
+      return this.findOneComplete(entityId);
   }
 
   findOneFromRelated(id: string): void { // Only used for validation

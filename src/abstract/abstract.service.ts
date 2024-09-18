@@ -44,8 +44,8 @@ export class AbstractService<
 
   //Return the entity with the related field as an array of ids
   findOneComplete(id: string): MainType {
-    const { [this.relatedField]: relatedField, ...entity } = this.mainDatabaseService.findOne(id)
-    const relatedEntities = this.relatedDatabaseService.findRelatedEntitiesWithoutRelated(this.mainField, id);
+    const entity = this.mainDatabaseService.findOneWithoutRelatedField(id, this.relatedField);
+    const relatedEntities = this.relatedDatabaseService.findRelatedEntities(this.mainField, id);
     return { ...entity, [this.relatedField]: relatedEntities } as unknown as MainType;
   }
 
@@ -67,13 +67,11 @@ export class AbstractService<
     return this.withTransaction(async () => {
       const entity = this.findOne(id);
       const updatedEntity = this.mainDatabaseService.update(id, { ...entity, ...updateDto });
-
       //If the entity has changed, remove the related entities and add the new ones
       if (entity !== updatedEntity) {
         await this.relatedDatabaseService.removeRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
         await this.relatedDatabaseService.addRelatedEntities(updatedEntity.id, updatedEntity[this.relatedField] as string[], this.mainField);
       }
-
       return this.findOneComplete(updatedEntity.id);
     });
   }

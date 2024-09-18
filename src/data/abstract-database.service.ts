@@ -18,7 +18,7 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
         return this.getArray()[id];
     }
 
-    findOneWithoutRelation(id: string, relatedField: keyof Type): Omit<Type, keyof Type> {
+    findOneWithoutRelatedField(id: string, relatedField: keyof Type): Omit<Type, keyof Type> {
         const { [relatedField as keyof Type]: relatedIds, ...entityWithoutRelatedIds } = this.findOne(id);
         return entityWithoutRelatedIds;
     }
@@ -31,14 +31,11 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
         return Object.values(this.getArray()).filter((obj: Type) => obj[property] === value);
     }
 
-    //Get all entities that have a related field with the value
-    findRelatedEntities(relatedField: keyof Type, relatedId: string): Type[] {
-        return Object.values(this.getArray()).filter((obj: Type) => (obj[relatedField] as string[]).includes(relatedId));
-    }
-
-    //Get all entities that have a related field with the value, but without the related field
-    findRelatedEntitiesWithoutRelated(relatedField: keyof Type, relatedId: string): Omit<Type, keyof Type>[] {
-        return this.findRelatedEntities(relatedField, relatedId).map(({ [relatedField]: relatedIds, ...rest }) => rest);
+    findRelatedEntities(relatedField: keyof Type, relatedId: string): Omit<Type, keyof Type>[] {
+        return Object.values(this.getArray())
+            .filter((obj: Type) => (obj[relatedField] as string[])
+            .includes(relatedId))
+            .map(({ [relatedField]: relatedIds, ...rest }) => rest);
     }
 
     create(obj: Type): Type {

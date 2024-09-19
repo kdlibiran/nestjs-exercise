@@ -8,7 +8,7 @@ export class AbstractService<
   MainType extends AbstractObject,
   RelatedType extends AbstractObject,
 > {
-  
+
   constructor(
     private readonly mainDatabaseService: AbstractDatabaseService<MainType>,
     private readonly relatedDatabaseService: AbstractDatabaseService<RelatedType>,
@@ -30,7 +30,7 @@ export class AbstractService<
 
   findOneComplete(id: string): MainType {
     const entity = this.findOne(id);
-    const relatedEntities = this.relatedDatabaseService.findRelatedEntities(this.mainField, id);
+    const relatedEntities = this.relatedDatabaseService.findAllByRelatedFieldId(this.mainField, id);
     return { ...entity, [this.relatedField]: relatedEntities };
   }
 

@@ -20,7 +20,7 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
         return Object.values(this.data).filter((obj: Type) => obj[property] === value);
     }
 
-    findRelatedEntities(relatedField: keyof Type, relatedId: string): Omit<Type, keyof Type>[] {
+    findAllByRelatedFieldId(relatedField: keyof Type, relatedId: string): Omit<Type, keyof Type>[] {
         return Object.values(this.data)
             .filter((obj: Type) => (obj[relatedField] as string[])
             .includes(relatedId))

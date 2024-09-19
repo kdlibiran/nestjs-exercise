@@ -23,11 +23,11 @@ export class BooksController extends AbstractController<Book, Author> {
 
   @Post(':id/authors/:authorId')
   addAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Book {
-    return this.booksService.addRelatedEntity(id, authorId);
+    return this.booksService.linkRelatedEntity(id, authorId);
   }
 
   @Delete(':id/authors/:authorId')
   removeAuthor(@Param('id') id: string, @Param('authorId') authorId: string): Book {
-    return this.booksService.removeRelatedEntity(id, authorId);
+    return this.booksService.unlinkRelatedEntity(id, authorId);
   }
 }

@@ -12,12 +12,12 @@ export class AbstractController<
 
   @Get()
   findAll(): MainType[] {
-    return this.service.findAllComplete();
+    return this.service.getAllWithRelated();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string): MainType {
-    return this.service.findOneComplete(id);
+    return this.service.getOneWithRelated(id);
   }
 
   @Delete(':id')

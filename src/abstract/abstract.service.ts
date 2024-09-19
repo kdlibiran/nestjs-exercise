@@ -8,7 +8,7 @@ export class AbstractService<
   MainType extends AbstractObject,
   RelatedType extends AbstractObject,
 > {
-
+  
   constructor(
     private readonly mainDatabaseService: AbstractDatabaseService<MainType>,
     private readonly relatedDatabaseService: AbstractDatabaseService<RelatedType>,
@@ -42,7 +42,7 @@ export class AbstractService<
   create(createDto: Omit<MainType, "id">): MainType {
     this.findAllFromRelated(createDto[this.relatedField as string]); // For validation
     const entity = this.mainDatabaseService.create({ id: uuidv4(), ...createDto } as MainType);
-    this.relatedDatabaseService.addRelatedEntities(entity.id, createDto[this.relatedField as string], this.mainField);
+    this.relatedDatabaseService.addToAllRelatedEntities(entity.id, createDto[this.relatedField as string], this.mainField);
     return this.findOneComplete(entity.id);
   }
 
@@ -50,9 +50,9 @@ export class AbstractService<
       const entity = this.findOne(id);
       this.findAllFromRelated(updateDto[this.relatedField as string]); // For validation
       const updatedEntity = this.mainDatabaseService.update(id, { ...entity, ...updateDto });
-      if (entity !== updatedEntity) {
-        this.relatedDatabaseService.removeRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
-        this.relatedDatabaseService.addRelatedEntities(updatedEntity.id, updatedEntity[this.relatedField] as string[], this.mainField);
+      if (entity[this.relatedField] !== updatedEntity[this.relatedField]) {
+        this.relatedDatabaseService.removeFromAllRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
+        this.relatedDatabaseService.addToAllRelatedEntities(entity.id, updatedEntity[this.relatedField] as string[], this.mainField);
       }
       return this.findOneComplete(updatedEntity.id);
   }
@@ -60,7 +60,7 @@ export class AbstractService<
   remove(id: string): { message: string } {
       const entity = this.findOne(id);
       this.mainDatabaseService.delete(id);
-      this.relatedDatabaseService.removeRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
+      this.relatedDatabaseService.removeFromAllRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
       return { message: `${String(this.mainField)} with id ${id} deleted` };
   }
 

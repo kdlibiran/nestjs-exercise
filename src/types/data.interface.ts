@@ -9,8 +9,12 @@ export class AbstractObject implements Identifiable {
 }
 
 export class Book extends AbstractObject {
-    
-        
+    @IsString({
+        message: `Title has to be a string`
+    })
+    @IsNotEmpty({
+        message: 'Title cannot be empty.'
+    })
     title!: string;
     @IsNotEmpty({
         message: 'Year cannot be empty.'

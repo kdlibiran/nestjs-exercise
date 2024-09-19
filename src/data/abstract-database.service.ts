@@ -53,11 +53,11 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
         this.data[entityId] = entity;
     }
 
-    addRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): void {
-        entityIds.forEach(entityId => this.addRelatedEntity(entityId, relatedId, relatedField));
+    addToAllRelatedEntities(entityId:string, relatedIds: string[], relatedField: keyof Type): void {
+        relatedIds.forEach(relatedId => this.addRelatedEntity(relatedId, entityId, relatedField))
     }
 
-    removeRelatedEntities(relatedId: string, entityIds: string[], relatedField: keyof Type): void {
-        entityIds.forEach(entityId => this.removeRelatedEntity(entityId, relatedId, relatedField));
+    removeFromAllRelatedEntities(entityId:string, relatedIds: string[], relatedField: keyof Type): void {
+        relatedIds.forEach(relatedId => this.removeRelatedEntity(relatedId, entityId, relatedField))
     }
 }

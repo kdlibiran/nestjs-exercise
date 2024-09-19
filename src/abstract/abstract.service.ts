@@ -42,7 +42,7 @@ export class AbstractService<
   create(createDto: Omit<MainType, "id">): MainType {
     this.findAllFromRelated(createDto[this.relatedField as string]); // For validation
     const entity = this.mainDatabaseService.create({ id: uuidv4(), ...createDto } as MainType);
-    this.relatedDatabaseService.addToAllRelatedEntities(entity.id, createDto[this.relatedField as string], this.mainField);
+    this.relatedDatabaseService.addRelatedEntityToMany(entity.id, createDto[this.relatedField as string], this.mainField);
     return this.findOneComplete(entity.id);
   }
 
@@ -51,8 +51,8 @@ export class AbstractService<
       this.findAllFromRelated(updateDto[this.relatedField as string]); // For validation
       const updatedEntity = this.mainDatabaseService.update(id, { ...entity, ...updateDto });
       if (entity[this.relatedField] !== updatedEntity[this.relatedField]) {
-        this.relatedDatabaseService.removeFromAllRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
-        this.relatedDatabaseService.addToAllRelatedEntities(entity.id, updatedEntity[this.relatedField] as string[], this.mainField);
+        this.relatedDatabaseService.removeRelatedEntityFromMany(entity.id, entity[this.relatedField] as string[], this.mainField);
+        this.relatedDatabaseService.addRelatedEntityToMany(entity.id, updatedEntity[this.relatedField] as string[], this.mainField);
       }
       return this.findOneComplete(updatedEntity.id);
   }
@@ -60,7 +60,7 @@ export class AbstractService<
   remove(id: string): { message: string } {
       const entity = this.findOne(id);
       this.mainDatabaseService.delete(id);
-      this.relatedDatabaseService.removeFromAllRelatedEntities(entity.id, entity[this.relatedField] as string[], this.mainField);
+      this.relatedDatabaseService.removeRelatedEntityFromMany(entity.id, entity[this.relatedField] as string[], this.mainField);
       return { message: `${String(this.mainField)} with id ${id} deleted` };
   }
 
@@ -86,8 +86,6 @@ export class AbstractService<
   }
 
   findAllFromRelated(ids: string[]): void { // Only used for validation
-    for (const id of ids) {
-      this.findOneFromRelated(id);
-    }
+    ids.forEach(id => this.findOneFromRelated(id));
   }
 }

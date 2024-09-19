@@ -22,8 +22,7 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
 
     findAllByRelatedFieldId(relatedField: keyof Type, relatedId: string): Omit<Type, keyof Type>[] {
         return Object.values(this.data)
-            .filter((obj: Type) => (obj[relatedField] as string[])
-            .includes(relatedId))
+            .filter((obj: Type) => (obj[relatedField] as string[]).includes(relatedId))
             .map(({ [relatedField]: relatedIds, ...rest }) => rest);
     }
 
@@ -49,15 +48,15 @@ export class AbstractDatabaseService<Type extends AbstractObject> {
 
     removeRelatedEntity(entityId: string, relatedId: string, relatedField: keyof Type): void {
         const entity = this.data[entityId];
-        (entity[relatedField] as string[]).splice((entity[relatedField] as string[]).indexOf(relatedId), 1);
+        (entity[relatedField] as string[]).filter(id => id !== relatedId);
         this.data[entityId] = entity;
     }
 
-    addToAllRelatedEntities(entityId:string, relatedIds: string[], relatedField: keyof Type): void {
+    addRelatedEntityToMany(entityId:string, relatedIds: string[], relatedField: keyof Type): void {
         relatedIds.forEach(relatedId => this.addRelatedEntity(relatedId, entityId, relatedField))
     }
 
-    removeFromAllRelatedEntities(entityId:string, relatedIds: string[], relatedField: keyof Type): void {
+    removeRelatedEntityFromMany(entityId:string, relatedIds: string[], relatedField: keyof Type): void {
         relatedIds.forEach(relatedId => this.removeRelatedEntity(relatedId, entityId, relatedField))
     }
 }
